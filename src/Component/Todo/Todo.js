@@ -12,7 +12,8 @@ class Todo extends Component {
         if (this._inputElement.value !== "") {
             let newItems = {
                 text: this._inputElement.value,
-                key: Date.now()
+                key: Date.now(),
+                Completed: false
             }
             this.setState((prevState) => {
                 return {
@@ -23,24 +24,63 @@ class Todo extends Component {
         }
     }
 
-    deleteTodoHandler = (key) => {
-        const updatedItems = this.state.items.filter(item => {
-            console.log(item)
+    deleteTodoHandler = (index, key) => {
+
+        const filteredItems = this.state.items.filter(item => {
+            return item.key !== key
         })
-        return updatedItems;
+        this.setState({ items: filteredItems })
     }
 
+    onCheckedHandler = (index, key) => {
+        const filteredItems = this.state.items;
+        if (this.state.items[index].Completed === true) {
+            filteredItems[index].Completed = false
+        }
+        else {
+            filteredItems[index].Completed = true
+        }
+        this.setState({ items: filteredItems })
+    }
+    FilterTodoHandler = (type) => {
+        // const All_Todo = 'All_Todo';
+        // const Active_Todo = 'Active_Todo';
+        // const Completed_Todo = 'Completed_Todo';
+        // const todos = this.state.items;
+        // let filter;
+        // switch (type) {
+        //     case Active_Todo:
+        //         filter = todos.filter(todo => {
+        //             if (!todo.Completed) {
+        //                 return todo;
+        //             }
+        //         });
+        //         break;
+        //     case Completed_Todo:
+        //         filter = todos.filter(todo => {
+        //             if (todo.Completed) {
+        //                 return todo;
+        //             }
+        //         });
+        //         break;
+        //     default:
+        //         filter = null;
+        //         break;
+        // }
 
+        // this.setState({ items: [...this.state.items,filter] })
+        // console.log(this.state)
+
+    }
     render() {
-
-        let todoLists = this.state.items.map((todo) => {
+        let todoLists = {}
+        todoLists = this.state.items.map((todo, index) => {
             return (
-                <div>
+                <div key={todo.key}>
                     <Form>
-                        <Form.Check>
-                            <Listodo item={todo.text} itemKey={todo.key} key={todo.key} clicked = {() => {this.deleteTodoHandler(todo.key)}}></Listodo>
-                        </Form.Check>
+                        <Form.Check style={{ position: 'absolute', marginTop: '20px' }} onChange={() => { this.onCheckedHandler(index, todo.key) }} ></Form.Check>
                     </Form>
+                    <Listodo complete={todo.Completed} item={todo.text} itemKey={todo.key} clicked={() => { this.deleteTodoHandler(index, todo.key) }}></Listodo>
                 </div>
             )
         })
@@ -67,17 +107,17 @@ class Todo extends Component {
                         <Col md={6} style={{ marginTop: '50px' }}>
                             <Container>
                                 <Row >
-                                    <Col  md="auto">
-                                        <Button className = "btnFilter">All</Button>
+                                    <Col style={{ flexGrow: '0' }}>
+                                        <Button className="btnFilter" onClick={() => { this.FilterTodoHandler('All_Todo') }}>All</Button>
                                     </Col>
-                                    <Col md="auto">
-                                        <Button className = "btnFilter">Active</Button>
+                                    <Col style={{ flexGrow: '0' }}>
+                                        <Button className="btnFilter" onClick={() => { this.FilterTodoHandler('Active_Todo') }}>Active</Button>
                                     </Col>
-                                    <Col md="auto">
-                                        <Button className = "btnFilter">Completed</Button>
+                                    <Col style={{ flexGrow: '0' }}>
+                                        <Button className="btnFilter" onClick={() => { this.FilterTodoHandler('Completed_Todo') }}>Completed</Button>
                                     </Col>
-                                {todoLists}
                                 </Row>
+                                {todoLists}
                             </Container>
                         </Col>
                     </Row>

@@ -22,7 +22,12 @@ background: black;
   cursor: pointer;
 }
 .btnFilter {
-  width: 120px;
+  width: 115px;
   margin-bottom: 20px;
-  margin-left: -10px;
+  
+}
+
+.completed{
+  text-decoration: line-through;
+  color: red;
 }
